@@ -6,12 +6,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy
 Absolutely! Adding a license is a smart move, especially now that you’ve added your copyright (`© Ruben Sheep 🐑`) to it. This establishes exactly what others are—and aren't—allowed to do with your code.
 
 The most popular and practical license for projects like this is the **MIT License**. It is open-source but ensures that your name and copyright notice always remain clearly displayed.
-
-### Here’s how to add a license using your mobile phone:
-
-1. **Open your repository** on GitHub in your mobile browser (make sure you are in *desktop view*).
-2. Tap the **Add file** button and select **Create new file**.
-3. For the filename, type exactly this: `LICENSE` (without any file extension).
-4. You should see a button labeled **Choose a license template** appear on the right (or above the input field). Click it.
-5. Find and select the **MIT License** from the list.
-6. GitHub will automatically fill in the year and your username. If everything looks correct, click the green **Commit changes** button at the bottom to save it.
