@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruben's Physics Toolkit</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      --card-bg: rgba(30, 41, 59, 0.75);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --success: #34d399;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 95vh;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 440px;
+    }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+    }
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    /* Navigatie Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 8px 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .tool-panel {
+      display: none;
+    }
+    .tool-panel.active {
+      display: block;
+    }
+    h2 {
+      color: var(--text-main);
+      font-size: 1.3rem;
+      margin: 0 0 5px 0;
+      font-weight: 700;
+    }
+    p.desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    select, input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      box-sizing: border-box;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    button.calc-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+      margin-top: 5px;
+      transition: transform 0.1s ease;
+    }
+    button.calc-btn:active {
+      transform: translateY(1px);
+    }
+    .res-box {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      color: var(--success);
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+    .res-box span {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    /* Stijlen voor de Rekenmachine */
+    .calculator-display {
+      width: 100%;
+      height: 55px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      text-align: right;
+      padding: 0 15px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      outline: none;
+      letter-spacing: 1px;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .calc-key {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      padding: 14px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .calc-key:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .calc-key:active {
+      transform: scale(0.95);
+    }
+    .calc-key.op {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    .calc-key.equals {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      border: none;
+    }
+    .calc-key.clear {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.75rem;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      
+      <div class="header-flex">
+        <span class="badge">Physics Toolkit</span>
+        <span style="font-size: 0.8rem; color: var(--text-sub);">v1.0</span>
+      </div>
+
+      <!-- Navigatie Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('snelheid', event)">Snelheid</button>
+        <button class="tab-btn" onclick="switchTab('remweg', event)">Remweg</button>
+        <button class="tab-btn" onclick="switchTab('rekenmachine', event)">Rekenmachine</button>
+      </div>
+
+      <!-- TAB 1: SNELHEID -->
+      <div id="snelheid" class="tool-panel active">
+        <h2>Snelheid Omrekenen</h2>
+        <p class="desc">Reken direct om tussen meter per seconde en kilometer per uur.</p>
+        
+        <div class="input-group">
+          <label>Richting</label>
+          <select id="s_richting">
+            <option value="ms_kmh">m/s &rarr; km/h (&times; 3.6)</option>
+            <option value="kmh_ms">km/h &rarr; m/s (&divide; 3.6)</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Waarde</label>
+          <input type="number" step="0.1" id="s_waarde" placeholder="Bijv. 25">
+        </div>
+        <button class="calc-btn" onclick="berekenSnelheid()">Bereken</button>
+        <div class="res-box" id="s_resultaat" style="display:none;">---</div>
+      </div>
+
+      <!-- TAB 2: REMWEG & STOPAFSTAND -->
+      <div id="remweg" class="tool-panel">
+        <h2>Remweg Calculator</h2>
+        <p class="desc">Bereken reactieafstand, remweg en totale stopafstand.</p>
+        
+        <div class="input-group">
+          <label>Snelheid (km/h)</label>
+          <input type="number" step="1" id="r_snelheid" placeholder="Bijv. 50">
+        </div>
+        <div class="input-group">
+          <label>Wegdek Conditie</label>
+          <select id="r_wegdek">
+            <option value="7">Droog asfalt (vertraging ~7 m/s²)</option>
+            <option value="4">Nat asfalt (vertraging ~4 m/s²)</option>
+            <option value="2">Glad / IJs (vertraging ~2 m/s²)</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Reactietijd (seconden)</label>
+          <input type="number" step="0.1" id="r_reactie" value="1.0">
+        </div>
+        <button class="calc-btn" onclick="berekenRemweg()">Bereken Stopafstand</button>
+        <div class="res-box" id="r_resultaat" style="display:none;">---</div>
+      </div>
+
+      <!-- TAB 3: REKENMACHINE -->
+      <div id="rekenmachine" class="tool-panel">
+        <h2>Rekenmachine</h2>
+        <p class="desc">Handig voor al je snelle wiskundige berekeningen.</p>
+
+        <input type="text" class="calculator-display" id="calc-display" readonly value="0">
+        
+        <div class="calc-grid">
+          <button class="calc-key clear" onclick="calcClear()">C</button>
+          <button class="calc-key op" onclick="calcAppend('(')">(</button>
+          <button class="calc-key op" onclick="calcAppend(')')">)</button>
+          <button class="calc-key op" onclick="calcAppend('/')">&divide;</button>
+          
+          <button class="calc-key" onclick="calcAppend('7')">7</button>
+          <button class="calc-key" onclick="calcAppend('8')">8</button>
+          <button class="calc-key" onclick="calcAppend('9')">9</button>
+          <button class="calc-key op" onclick="calcAppend('*')">&times;</button>
+          
+          <button class="calc-key" onclick="calcAppend('4')">4</button>
+          <button class="calc-key" onclick="calcAppend('5')">5</button>
+          <button class="calc-key" onclick="calcAppend('6')">6</button>
+          <button class="calc-key op" onclick="calcAppend('-')">-</button>
+          
+          <button class="calc-key" onclick="calcAppend('1')">1</button>
+          <button class="calc-key" onclick="calcAppend('2')">2</button>
+          <button class="calc-key" onclick="calcAppend('3')">3</button>
+          <button class="calc-key op" onclick="calcAppend('+')">+</button>
+          
+          <button class="calc-key" onclick="calcAppend('0')" style="grid-column: span 2;">0</button>
+          <button class="calc-key" onclick="calcAppend('.')">.</button>
+          <button class="calc-key equals" onclick="calcCalculate()">=</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="footer">
+      &copy; Ruben Sheep 🐑
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId, event) {
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function berekenSnelheid() {
+      const richting = document.getElementById('s_richting').value;
+      const val = parseFloat(document.getElementById('s_waarde').value);
+      const resBox = document.getElementById('s_resultaat');
+
+      if (isNaN(val)) {
+        alert('Vul een geldige waarde in!');
+        return;
+      }
+
+      let res = (richting === 'ms_kmh') ? val * 3.6 : val / 3.6;
+      let unitIn = (richting === 'ms_kmh') ? 'm/s' : 'km/h';
+      let unitOut = (richting === 'ms_kmh') ? 'km/h' : 'm/s';
+
+      resBox.style.display = 'block';
+      resBox.innerHTML = `Resultaat:<br><span>${val.toFixed(1)} ${unitIn} = ${res.toFixed(1)} ${unitOut}</span>`;
+    }
+
+    function berekenRemweg() {
+      const kmh = parseFloat(document.getElementById('r_snelheid').value);
+      const vertraging = parseFloat(document.getElementById('r_wegdek').value);
+      const tReactie = parseFloat(document.getElementById('r_reactie').value);
+      const resBox = document.getElementById('r_resultaat');
+
+      if (isNaN(kmh) || kmh < 0 || isNaN(tReactie)) {
+        alert('Vul geldige waardes in!');
+        return;
+      }
+
+      const v = kmh / 3.6;
+      const sReactie = v * tReactie;
+      const sRem = (v * v) / (2 * vertraging);
+      const sTotaal = sReactie + sRem;
+
+      resBox.style.display = 'block';
+      resBox.innerHTML = `
+        Reactieafstand: ${sReactie.toFixed(1)} m<br>
+        Remweg: ${sRem.toFixed(1)} m<br>
+        <span style="margin-top: 6px; border-top: 1px solid rgba(52,211,153,0.3); padding-top: 4px;">Totale Stopafstand: ${sTotaal.toFixed(1)} m</span>
+      `;
+    }
+
+    // Rekenmachine Logica
+    let calcExpression = "0";
+
+    function updateDisplay() {
+      document.getElementById('calc-display').value = calcExpression;
+    }
+
+    function calcAppend(val) {
+      if (calcExpression === "0" && val !== '.') {
+        calcExpression = val;
+      } else {
+        calcExpression += val;
+      }
+      updateDisplay();
+    }
+
+    function calcClear() {
+      calcExpression = "0";
+      updateDisplay();
+    }
+
+    function calcCalculate() {
+      try {
+        // Vervang visuele tekens voor javascript evaluatie
+        let sanitized = calcExpression.replace(/×/g, '*').replace(/÷/g, '/');
+        let result = eval(sanitized);
+        if (!isFinite(result)) {
+          calcExpression = "Fout";
+        } else {
+          calcExpression = String(parseFloat(result.toFixed(6)));
+        }
+      } catch (error) {
+        calcExpression = "Fout";
+      }
+      updateDisplay();
+    }
+  </script>
+
+</body>
+</html>
